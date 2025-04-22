@@ -1,0 +1,13 @@
+
+# .gitignore
+
+**/.DS_Store
+**/todo
+
+.cache/
+build/
+todo/
+obj/
+
+bin
+

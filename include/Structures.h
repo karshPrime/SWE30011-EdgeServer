@@ -10,6 +10,7 @@ typedef unsigned int uint;
 
 // Should stay same as the enum defined in IoT firmware
 typedef enum { STOP, START, UNCHANGED, BEEP, BEEP_FAST, BEEP_SLOW } AStatus;
+typedef enum { RED, BLUE, GREEN } ColourRGB;
 
 typedef enum { FALSE, TRUE } bool;
 
@@ -19,6 +20,6 @@ typedef struct {
     char    BracketEnd;
     char   *Data;
     char   *Output;
-    void( *Process )( char * );
+    void( *Process )( char *, char ** );
 } Property;
 

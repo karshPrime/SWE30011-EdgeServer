@@ -28,6 +28,8 @@ int main( void )
         }
     }
 
+error:
+    ProcessDone();
     LinkTerminate( ES, MS );
     return 0;
 }

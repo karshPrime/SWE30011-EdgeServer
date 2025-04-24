@@ -17,6 +17,7 @@ int main( void )
     {
         char lSingleChar;
 
+        LinkFetch( &lSingleChar );
         if ( '"' == lSingleChar )
         {
         }
@@ -24,7 +25,7 @@ int main( void )
         if ( ES->Output && MS->Output )
         {
             ProcessDone();
-            LinkDispatch( ES->Output, MS->Output );
+            LinkDispatch( &ES->Output, &MS->Output );
         }
     }
 

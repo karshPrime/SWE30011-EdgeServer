@@ -15,6 +15,11 @@ typedef enum { RED, BLUE, GREEN } ColourRGB;
 typedef enum { FALSE, TRUE } bool;
 
 typedef struct {
+    str         Key;
+    AStatus     Status;
+} OutputMap;
+
+typedef struct {
     bool    Read;
     char    BracketStart;
     char    BracketEnd;

@@ -9,9 +9,10 @@
 #define SERIAL_PORT "/dev/cu.usbmodem579A0192001"
 #define BAUDRATE B9600
 
-#define MAX_MS_SIZE     1024
-#define MAX_ES_SIZE     8192
-#define MAX_OUT_SIZE    64
+#define MS_INPUT_SIZE   1024
+#define MS_OUTPUT_SIZE  128
+#define ES_INPUT_SIZE   8192
+#define ES_OUTPUT_SIZE  32
 
 #define LinkFetch( SingleChar ) read( GetSerialConnection(), SingleChar, 1 )
 

@@ -19,10 +19,8 @@ int GetSerialConnection( void ) { return SerialConnection; }
 
 void setupSerial( void )
 {
-    debug( "Setting Serial Connection" );
-
     SerialConnection = open( SERIAL_PORT, O_RDWR | O_NOCTTY );
-    check( SerialConnection != -1, "Unable to open serial port" );
+    check( SerialConnection != -1, "Unable to open serial port %s", SERIAL_PORT );
 
     struct termios lTermConfig;
     tcgetattr( SerialConnection, &lTermConfig );
@@ -30,11 +28,11 @@ void setupSerial( void )
     cfsetospeed( &lTermConfig, BAUDRATE );
 
     lTermConfig.c_cflag |= ( CLOCAL | CREAD );
-    lTermConfig.c_cflag &= ~CSIZE;
-    lTermConfig.c_cflag |= CS8;      // 8 data bits
-    lTermConfig.c_cflag &= ~PARENB;  // No parity
-    lTermConfig.c_cflag &= ~CSTOPB;  // 1 stop bit
-    lTermConfig.c_cflag &= ~CRTSCTS; // No flow control
+    lTermConfig.c_cflag &=  ~CSIZE;
+    lTermConfig.c_cflag |=   CS8;     // 8 data bits
+    lTermConfig.c_cflag &=  ~PARENB;  // No parity
+    lTermConfig.c_cflag &=  ~CSTOPB;  // 1 stop bit
+    lTermConfig.c_cflag &=  ~CRTSCTS; // No flow control
 
     tcsetattr( SerialConnection, TCSANOW, &lTermConfig );
 
@@ -49,6 +47,7 @@ void propertyFree( Property *aProperty )
     if ( aProperty )
     {
         if ( aProperty->Data ) free( aProperty->Data );
+        if ( aProperty->Output ) free( aProperty->Output );
         free( aProperty );
     }
 }
@@ -65,8 +64,8 @@ void LinkInit( Property **ES, Property **MS )
     (*ES)->BracketStart = '[';
     (*ES)->BracketEnd = ']';
     (*ES)->Process = ProcessES;
-    (*ES)->Output = NULL;
-    (*ES)->Data = malloc( sizeof(char) * MAX_ES_SIZE );
+    (*ES)->Output = malloc( sizeof(char) * ES_OUTPUT_SIZE );
+    (*ES)->Data = malloc( sizeof(char) * ES_INPUT_SIZE );
     check_mem( (*ES)->Data );
 
     *MS = malloc( sizeof(Property) );
@@ -74,13 +73,14 @@ void LinkInit( Property **ES, Property **MS )
     (*MS)->BracketStart = '{';
     (*MS)->BracketEnd = '}';
     (*MS)->Process = ProcessMS;
-    (*MS)->Output = NULL;
-    (*MS)->Data = malloc( sizeof(char) * MAX_ES_SIZE );
+    (*MS)->Output = malloc( sizeof(char) * MS_OUTPUT_SIZE );
+    (*MS)->Data = malloc( sizeof(char) * MS_INPUT_SIZE );
     check_mem( (*MS)->Data );
 
     return;
+
 error:
-    close( SerialConnection );
+    LinkTerminate( *ES, *MS );
     exit( EXIT_FAILURE );
 }
 
@@ -94,17 +94,12 @@ void LinkTerminate( Property *ES, Property *MS )
 
 void LinkDispatch( char **aResultMS, char **aResultES )
 {
-    char lOutputBuffer[MAX_OUT_SIZE];
-    snprintf(
-        lOutputBuffer, sizeof(lOutputBuffer),
-        "%s%s\n",
-        *aResultES, *aResultMS
-    );
-
-    write( SerialConnection, lOutputBuffer, strlen( lOutputBuffer ) );
-    debug( "%s", lOutputBuffer );
-
+    debug( "%s", *aResultES );
+    write( SerialConnection, *aResultES, ES_OUTPUT_SIZE );
     aResultES = NULL;
+
+    debug( "%s", *aResultMS );
+    write( SerialConnection, *aResultMS, MS_OUTPUT_SIZE );
     aResultMS = NULL;
 }
 

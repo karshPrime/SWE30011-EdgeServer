@@ -4,19 +4,17 @@
 #include "Link.h"
 #include "Process.h"
 #include "Structures.h"
-#include "Debug.h"
+// #include "Debug.h"
 
 int main( void )
 {
-    debug( "Starting..." );
-
     Property *ES, *MS;
     LinkInit( &ES, &MS );
+    int lDataIndex = 0;
 
     while ( TRUE )
     {
         Property *lCurrentSelected = NULL;
-        int lDataIndex = 0;
         char lSingleChar;
 
         LinkFetch( &lSingleChar );
@@ -64,6 +62,7 @@ int main( void )
 error:
     ProcessDone();
     LinkTerminate( ES, MS );
+
     return 0;
 }
 

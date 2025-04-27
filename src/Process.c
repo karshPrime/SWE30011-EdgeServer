@@ -1,25 +1,14 @@
 
 #include <unistd.h>
-#include <pthread.h>
 #include <stdlib.h>
 #include "Process.h"
 #include "Debug.h"
-#include "Structures.h"
+#include "Database.h"
 
-pthread_t ThreadMS;
-int ThreadStatus;
+const int MotionSensitiveThreshold = 1000;
+const int TemperatureThreshhold = 10;
 
 //- Private Methods --------------------------------------------------------------------------------
-
-void *msAction( void *aData )
-{
-    // save data
-    // process data
-
-    printf( "MS-%s\n", ( char* )aData );
-    free(aData);
-    return NULL;
-}
 
 ColourRGB mapAverageECG( uint aSum )
 {
@@ -33,19 +22,11 @@ ColourRGB mapAverageECG( uint aSum )
 
 void ProcessMS( char *aData, char **aOutput )
 {
-    char *lCopyData = strdup( aData );
-    check_mem( lCopyData );
+    MotionValues lValues;
 
-    ThreadStatus = pthread_create( &ThreadMS, NULL, msAction, (void*)lCopyData );
-    check( ThreadStatus == 0, "Error creating thread\n");
+    debug( "%s\n", ( char* )aData );
 
-    return;
-
-error:
-    // think of how to process data sequentially if thread fails
-
-    free(aData);
-    return;
+    DBWriteMS( &lValues );
 }
 
 void ProcessES( char *aData, char **aOutput )
@@ -69,14 +50,9 @@ void ProcessES( char *aData, char **aOutput )
         }
     }
 
-    // save in database
-
-    printf( "{\"AHR\":%d,\n", lSum/ECG_RATE );
+    debug( "{\"AHR\":%d,\n", lSum/ECG_RATE );
     snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(mapAverageECG( lSum )));
-}
 
-void ProcessDone( void )
-{
-    if ( !ThreadStatus ) pthread_join( ThreadMS, NULL );
+    DBWriteES( lValues );
 }
 

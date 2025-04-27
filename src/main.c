@@ -3,13 +3,15 @@
 
 #include "Link.h"
 #include "Process.h"
-#include "Structures.h"
+#include "Database.h"
 // #include "Debug.h"
 
 int main( void )
 {
     Property *ES, *MS;
     LinkInit( &ES, &MS );
+    DBInit();
+
     int lDataIndex = 0;
 
     while ( TRUE )
@@ -54,12 +56,13 @@ int main( void )
 
         if ( ES->Output && MS->Output )
         {
-            ProcessDone();
+            DBThreadsJoin();
             LinkDispatch( &ES->Output, &MS->Output );
         }
     }
 
 error:
+    DBClose();
     ProcessDone();
     LinkTerminate( ES, MS );
 

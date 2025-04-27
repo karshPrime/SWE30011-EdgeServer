@@ -15,6 +15,18 @@ typedef enum { RED, BLUE, GREEN } ColourRGB;
 typedef enum { FALSE, TRUE } bool;
 
 typedef struct {
+    struct {
+        int16_t X, Y, Z;
+    } Accelerometer;
+
+    struct {
+        int16_t X, Y, Z;
+    } Gyro;
+
+    int16_t Temperature;
+} MotionValues;
+
+typedef struct {
     str         Key;
     AStatus     Status;
 } OutputMap;
@@ -27,4 +39,9 @@ typedef struct {
     char   *Output;
     void( *Process )( char *, char ** );
 } Property;
+
+typedef struct {
+    pthread_t   Thread;
+    bool        Status;
+} Thread;
 

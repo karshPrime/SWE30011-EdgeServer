@@ -26,12 +26,35 @@ void ProcessMS( char *aData, char **aOutput )
 
     debug( "%s\n", ( char* )aData );
 
+    sscanf( aData,
+        " \"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%hd",
+        &lValues.Accelerometer.X, &lValues.Accelerometer.Y, &lValues.Accelerometer.Z,
+        &lValues.Gyro.X, &lValues.Gyro.Y, &lValues.Gyro.Z,
+        &lValues.Temperature
+    );
+
+    debug( "Temperature: %d\n", lValues.Temperature );
+    debug( "Gyro: X=%d, Y=%d, Z=%d\n", lValues.Gyro.X, lValues.Gyro.Y, lValues.Gyro.Z );
+    debug( "Accelerometer: X=%d, Y=%d, Z=%d\n",
+        lValues.Accelerometer.X, lValues.Accelerometer.Y, lValues.Accelerometer.Z );
+
+    sprintf( *aOutput,
+        ",\"LLED\": %d,\"RLED\":%d,\"ULED\":%d,\"DLED\":%d,\"FLED\":%d,\"BLED\":%d,\"TLED\":%d}",
+        ( lValues.Accelerometer.X >  MotionSensitiveThreshold ),
+        ( lValues.Accelerometer.X < -MotionSensitiveThreshold ),
+        ( lValues.Accelerometer.Y >  MotionSensitiveThreshold ),
+        ( lValues.Accelerometer.Y < -MotionSensitiveThreshold ),
+        ( lValues.Accelerometer.Z >  MotionSensitiveThreshold ),
+        ( lValues.Accelerometer.Z < -MotionSensitiveThreshold ),
+        ( lValues.Temperature >= TemperatureThreshhold )
+    );
+
     DBWriteMS( &lValues );
 }
 
 void ProcessES( char *aData, char **aOutput )
 {
-    int lValues[ECG_RATE];
+    uint lValues[ECG_RATE];
     uint lSum = 0;
 
     for ( int i = 0; i < ECG_RATE; i++ )
@@ -39,15 +62,9 @@ void ProcessES( char *aData, char **aOutput )
         lValues[i] = atoi( aData );
         lSum += lValues[i];
 
-        while ( *aData != ',' && *aData != '\0' )
-        {
-            aData++;
-        }
+        while ( *aData != ',' && *aData != '\0' ) aData++;
 
-        if ( *aData == ',' )
-        {
-            aData++;
-        }
+        if ( *aData == ',' ) aData++;
     }
 
     debug( "{\"AHR\":%d,\n", lSum/ECG_RATE );

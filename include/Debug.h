@@ -3,7 +3,7 @@
 
 #pragma once
 
-// #define PRODUCTION
+// #define NDEBUG
 
 #include <stdio.h>
 #include <errno.h>
@@ -25,7 +25,7 @@
     #define TERM_RESET   ""
 #endif
 
-#ifdef PRODUCTION
+#ifdef NDEBUG
     #define debug( M, ... )
 
     #define log_error( M, ... ) fprintf( stderr, "%s[ERROR]%s " M "\n%s",\

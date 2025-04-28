@@ -1,10 +1,11 @@
 
 // main.c
 
+// #define NDEBUG
+
 #include "Link.h"
-#include "Process.h"
 #include "Database.h"
-// #include "Debug.h"
+#include "Debug.h"
 
 int main( void )
 {
@@ -62,8 +63,8 @@ int main( void )
     }
 
 error:
+    debug( "Terminating the program" );
     DBClose();
-    ProcessDone();
     LinkTerminate( ES, MS );
 
     return 0;

@@ -1,10 +1,19 @@
 
+/* Process.c
+ *
+ *
+ */
+
+// #define NDEBUG
+
 #include <unistd.h>
 #include <stdlib.h>
-#include "Process.h"
-#include "Debug.h"
-#include "Database.h"
 
+#include "Process.h"
+#include "Database.h"
+#include "Debug.h"
+
+// temporary vars; would be replaced with webserver connecting module
 const int MotionSensitiveThreshold = 1000;
 const int TemperatureThreshhold = 10;
 

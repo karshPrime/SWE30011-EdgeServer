@@ -1,20 +1,33 @@
 
+/* Database.c
+ *
+ *
+ */
+
+// #define NDEBUG
+
 #include <pthread.h>
 #include "Database.h"
 #include "Debug.h"
 
+
+//- Global Vars ------------------------------------------------------------------------------------
+
 Thread ThreadMS;
 Thread ThreadES;
+
 
 //- Private Methods --------------------------------------------------------------------------------
 
 void *saveMS( void *aValues )
 {
+    debug( "saveMS called" );
     return NULL;
 }
 
 void *saveES( void *aValues )
 {
+    debug( "saveES called" );
     return NULL;
 }
 

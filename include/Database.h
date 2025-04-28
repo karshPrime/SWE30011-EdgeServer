@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "Structures.h"
+#include "Config.h"
 
 void DBInit( void );
 void DBClose( void );

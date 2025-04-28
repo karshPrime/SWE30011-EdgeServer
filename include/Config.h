@@ -3,16 +3,31 @@
 
 #include <sys/types.h>
 
-//- Typedefs ---------------------------------------------------------------------------------------
+//- System Configs ---------------------------------------------------------------------------------
 
-typedef const char* str;
-typedef unsigned int uint;
+// Serial Communication
+#define SERIAL_PORT "/dev/cu.usbmodem579A0192001"
+#define BAUDRATE B9600
+
+// I/O Buffer Size
+#define MS_INPUT_SIZE   1024
+#define MS_OUTPUT_SIZE  128
+#define ES_INPUT_SIZE   8192
+#define ES_OUTPUT_SIZE  32
+
+// System Defines
+#define ECG_RATE 256
+
+
+//- Custom Datatypes -------------------------------------------------------------------------------
 
 // Should stay same as the enum defined in IoT firmware
 typedef enum { STOP, START, UNCHANGED, BEEP, BEEP_FAST, BEEP_SLOW } AStatus;
 typedef enum { RED, BLUE, GREEN } ColourRGB;
 
 typedef enum { FALSE, TRUE } bool;
+typedef const char* str;
+typedef unsigned int uint;
 
 typedef struct {
     struct {

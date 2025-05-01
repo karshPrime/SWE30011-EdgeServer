@@ -36,7 +36,7 @@ void ProcessMS( char *aData, char **aOutput )
     debug( "%s", aData );
 
     sscanf( aData,
-        " \"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%hd",
+        " \"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%lf",
         &lValues.Accelerometer.X, &lValues.Accelerometer.Y, &lValues.Accelerometer.Z,
         &lValues.Gyro.X, &lValues.Gyro.Y, &lValues.Gyro.Z,
         &lValues.Temperature

@@ -10,10 +10,11 @@
 #define BAUDRATE B9600
 
 // I/O Buffer Size
-#define MS_INPUT_SIZE   1024
-#define MS_OUTPUT_SIZE  128
-#define ES_INPUT_SIZE   8192
-#define ES_OUTPUT_SIZE  32
+#define MS_INPUT_SIZE       1024
+#define MS_OUTPUT_SIZE      128
+#define ES_INPUT_SIZE       8192
+#define ES_OUTPUT_SIZE      32
+#define SERVER_OUTPUT_SIZE  50
 
 // System Defines
 #define ECG_RATE 256
@@ -40,6 +41,16 @@ typedef struct {
 
     int16_t Temperature;
 } MotionValues;
+
+typedef struct {
+    struct {
+        uint  Red;
+        uint  Green;
+        uint  Blue;
+    } RGB;
+
+    // possible to expand
+} ServerValues;
 
 typedef struct {
     str         Key;

@@ -99,10 +99,14 @@ void LinkTerminate( Property *ES, Property *MS )
     propertyFree( MS );
 }
 
-void LinkDispatch( char **aResultMS, char **aResultES )
+void LinkDispatch( char **aResultMS, char **aResultES, char *aServer )
 {
     debug( "%s", *aResultES );
     write( SerialConnection, *aResultES, ES_OUTPUT_SIZE );
+    aResultES = NULL;
+
+    debug( "%s", aServer );
+    write( SerialConnection, aServer, SERVER_OUTPUT_SIZE );
     aResultES = NULL;
 
     debug( "%s", *aResultMS );

@@ -9,7 +9,7 @@
 
 void LinkInit( Property **, Property ** );
 void LinkTerminate( Property *, Property * );
-void LinkDispatch( char **, char ** );
+void LinkDispatch( char **, char **, char* );
 
 int GetSerialConnection( void );
 

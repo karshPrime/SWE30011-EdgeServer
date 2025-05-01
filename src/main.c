@@ -1,16 +1,22 @@
 
 // main.c
 
-// #define NDEBUG
+#define NDEBUG
 
 #include "Link.h"
+#include "Server.h"
 #include "Database.h"
 #include "Debug.h"
 
+#include <stdio.h>
+
 int main( void )
 {
+    debug( "Starting the system" );
     Property *ES, *MS;
+
     LinkInit( &ES, &MS );
+    ServerInit();
     DBInit();
 
     int lDataIndex = 0;
@@ -58,7 +64,8 @@ int main( void )
         if ( ES->Output && MS->Output )
         {
             DBThreadsJoin();
-            LinkDispatch( &ES->Output, &MS->Output );
+            debug( "%s%s", ES->Output, MS->Output );
+            LinkDispatch( &ES->Output, &MS->Output, ServerOutput() );
         }
     }
 

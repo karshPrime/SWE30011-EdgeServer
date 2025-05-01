@@ -4,7 +4,7 @@
  *
  */
 
-// #define NDEBUG
+#define NDEBUG
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -33,7 +33,7 @@ void ProcessMS( char *aData, char **aOutput )
 {
     MotionValues lValues;
 
-    debug( "%s\n", ( char* )aData );
+    debug( "%s", aData );
 
     sscanf( aData,
         " \"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%hd",
@@ -42,13 +42,8 @@ void ProcessMS( char *aData, char **aOutput )
         &lValues.Temperature
     );
 
-    debug( "Temperature: %d\n", lValues.Temperature );
-    debug( "Gyro: X=%d, Y=%d, Z=%d\n", lValues.Gyro.X, lValues.Gyro.Y, lValues.Gyro.Z );
-    debug( "Accelerometer: X=%d, Y=%d, Z=%d\n",
-        lValues.Accelerometer.X, lValues.Accelerometer.Y, lValues.Accelerometer.Z );
-
     sprintf( *aOutput,
-        ",\"LLED\": %d,\"RLED\":%d,\"ULED\":%d,\"DLED\":%d,\"FLED\":%d,\"BLED\":%d,\"TLED\":%d}",
+        "\"LLED\":%d,\"RLED\":%d,\"ULED\":%d,\"DLED\":%d,\"FLED\":%d,\"BLED\":%d,\"TLED\":%d}",
         ( lValues.Accelerometer.X >  MotionSensitiveThreshold ),
         ( lValues.Accelerometer.X < -MotionSensitiveThreshold ),
         ( lValues.Accelerometer.Y >  MotionSensitiveThreshold ),
@@ -58,6 +53,7 @@ void ProcessMS( char *aData, char **aOutput )
         ( lValues.Temperature >= TemperatureThreshhold )
     );
 
+    debug( "%s", *aOutput );
     DBWriteMS( &lValues );
 }
 
@@ -65,6 +61,8 @@ void ProcessES( char *aData, char **aOutput )
 {
     uint lValues[ECG_RATE];
     uint lSum = 0;
+
+    debug( "%s", aData );
 
     for ( int i = 0; i < ECG_RATE; i++ )
     {
@@ -76,9 +74,9 @@ void ProcessES( char *aData, char **aOutput )
         if ( *aData == ',' ) aData++;
     }
 
-    debug( "{\"AHR\":%d,\n", lSum/ECG_RATE );
     snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(mapAverageECG( lSum )));
 
+    debug( "%s", *aOutput );
     DBWriteES( lValues );
 }
 

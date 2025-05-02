@@ -15,9 +15,9 @@ int main( void )
     debug( "Starting the system" );
     Property *ES, *MS;
 
-    LinkInit( &ES, &MS );
-    ServerInit();
-    DBInit();
+    link_init( &ES, &MS );
+    server_init();
+    db_init();
 
     int lDataIndex = 0;
 
@@ -26,10 +26,10 @@ int main( void )
         Property *lCurrentSelected = NULL;
         char lSingleChar;
 
-        LinkFetch( &lSingleChar );
+        link_fetch( &lSingleChar );
         if ( '"' == lSingleChar )
         {
-            LinkFetch( &lSingleChar );
+            link_fetch( &lSingleChar );
 
             if ( 'M' == lSingleChar )
             {
@@ -46,14 +46,14 @@ int main( void )
                 continue;
             }
 
-            while ( lSingleChar != lCurrentSelected->BracketStart ) LinkFetch( &lSingleChar );
+            while ( lSingleChar != lCurrentSelected->BracketStart ) link_fetch( &lSingleChar );
         }
 
         if ( lCurrentSelected )
         {
             while ( lSingleChar != lCurrentSelected->BracketEnd )
             {
-                LinkFetch( &lSingleChar );
+                link_fetch( &lSingleChar );
                 lCurrentSelected->Data[lDataIndex++] = lSingleChar;
             }
 
@@ -63,16 +63,16 @@ int main( void )
 
         if ( ES->Output && MS->Output )
         {
-            DBThreadsJoin();
+            db_threads_join();
             debug( "%s%s", ES->Output, MS->Output );
-            LinkDispatch( &ES->Output, &MS->Output, ServerOutput() );
+            link_dispatch( &ES->Output, &MS->Output, server_output() );
         }
     }
 
 error:
     debug( "Terminating the program" );
-    DBClose();
-    LinkTerminate( ES, MS );
+    db_close();
+    link_terminate( ES, MS );
 
     return 0;
 }

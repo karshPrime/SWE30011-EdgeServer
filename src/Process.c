@@ -19,7 +19,7 @@ const int TemperatureThreshhold = 10;
 
 //- Private Methods --------------------------------------------------------------------------------
 
-ColourRGB mapAverageECG( uint aSum )
+ColourRGB _map_average_ECG( uint aSum )
 {
     if ( aSum < (10 * ECG_RATE) ) return RED;
     else if ( aSum < (1000 * ECG_RATE) ) return BLUE;
@@ -29,7 +29,7 @@ ColourRGB mapAverageECG( uint aSum )
 
 //- Public Methods ---------------------------------------------------------------------------------
 
-void ProcessMS( char *aData, char **aOutput )
+void process_MS( char *aData, char **aOutput )
 {
     MotionValues lValues;
 
@@ -54,10 +54,11 @@ void ProcessMS( char *aData, char **aOutput )
     );
 
     debug( "%s", *aOutput );
-    DBWriteMS( &lValues );
+    db_write_MS( &lValues );
 }
 
-void ProcessES( char *aData, char **aOutput )
+
+void process_ES( char *aData, char **aOutput )
 {
     uint lValues[ECG_RATE];
     uint lSum = 0;
@@ -74,9 +75,9 @@ void ProcessES( char *aData, char **aOutput )
         if ( *aData == ',' ) aData++;
     }
 
-    snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(mapAverageECG( lSum )));
+    snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(_map_average_ECG( lSum )));
 
     debug( "%s", *aOutput );
-    DBWriteES( lValues );
+    db_write_ES( lValues );
 }
 

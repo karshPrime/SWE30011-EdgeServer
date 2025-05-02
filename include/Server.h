@@ -1,6 +1,6 @@
 
 #pragma once
 
-void ServerInit( void );
-char *ServerOutput( void );
+void server_init( void );
+char *server_output( void );
 

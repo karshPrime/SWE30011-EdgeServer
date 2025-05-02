@@ -7,11 +7,11 @@
 
 #include "Config.h"
 
-void LinkInit( Property **, Property ** );
-void LinkTerminate( Property *, Property * );
-void LinkDispatch( char **, char **, char* );
+void link_init( Property **, Property ** );
+void link_terminate( Property *, Property * );
+void link_dispatch( char **, char **, char* );
 
 int GetSerialConnection( void );
 
-#define LinkFetch( SingleChar ) read( GetSerialConnection(), SingleChar, 1 )
+#define link_fetch( aSingleChar ) read( GetSerialConnection(), aSingleChar, 1 )
 

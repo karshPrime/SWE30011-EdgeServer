@@ -13,7 +13,7 @@ char OutputString[SERVER_OUTPUT_SIZE];
 
 //- Public Methods ---------------------------------------------------------------------------------
 
-void ServerInit( void )
+void server_init( void )
 {
     // Initial Values
     Values.RGB.Red   = 0;
@@ -21,7 +21,8 @@ void ServerInit( void )
     Values.RGB.Blue  = 0;
 }
 
-char *ServerOutput( void )
+
+char *server_output( void )
 {
     sprintf( 
         OutputString,

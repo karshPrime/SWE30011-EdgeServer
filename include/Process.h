@@ -3,6 +3,6 @@
 
 #include "Config.h"
 
-void ProcessMS( char *, char ** );
-void ProcessES( char *, char ** );
+void process_MS( char *, char ** );
+void process_ES( char *, char ** );
 

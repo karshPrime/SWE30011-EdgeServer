@@ -22,9 +22,10 @@ int SerialConnection;
 
 int GetSerialConnection( void ) { return SerialConnection; }
 
+
 //- Private Methods --------------------------------------------------------------------------------
 
-void setupSerial( void )
+void _setup_serial( void )
 {
     SerialConnection = open( SERIAL_PORT, O_RDWR | O_NOCTTY );
     check( SerialConnection != -1, "Unable to open serial port %s", SERIAL_PORT );
@@ -49,7 +50,8 @@ error:
     exit( EXIT_FAILURE );
 }
 
-void propertyFree( Property *aProperty )
+
+void _property_free( Property *aProperty )
 {
     if ( aProperty )
     {
@@ -62,15 +64,15 @@ void propertyFree( Property *aProperty )
 
 //- Public Methods ---------------------------------------------------------------------------------
 
-void LinkInit( Property **ES, Property **MS )
+void link_init( Property **ES, Property **MS )
 {
-    setupSerial();
+    _setup_serial();
 
     *ES = malloc( sizeof(Property) );
     check_mem( *ES );
     (*ES)->BracketStart = '[';
     (*ES)->BracketEnd = ']';
-    (*ES)->Process = ProcessES;
+    (*ES)->Process = process_ES;
     (*ES)->Output = malloc( sizeof(char) * ES_OUTPUT_SIZE );
     (*ES)->Data = malloc( sizeof(char) * ES_INPUT_SIZE );
     check_mem( (*ES)->Data );
@@ -79,7 +81,7 @@ void LinkInit( Property **ES, Property **MS )
     check_mem( *MS );
     (*MS)->BracketStart = '{';
     (*MS)->BracketEnd = '}';
-    (*MS)->Process = ProcessMS;
+    (*MS)->Process = process_MS;
     (*MS)->Output = malloc( sizeof(char) * MS_OUTPUT_SIZE );
     (*MS)->Data = malloc( sizeof(char) * MS_INPUT_SIZE );
     check_mem( (*MS)->Data );
@@ -87,19 +89,21 @@ void LinkInit( Property **ES, Property **MS )
     return;
 
 error:
-    LinkTerminate( *ES, *MS );
+    link_terminate( *ES, *MS );
     exit( EXIT_FAILURE );
 }
 
-void LinkTerminate( Property *ES, Property *MS )
+
+void link_terminate( Property *ES, Property *MS )
 {
     close( SerialConnection );
 
-    propertyFree( ES );
-    propertyFree( MS );
+    _property_free( ES );
+    _property_free( MS );
 }
 
-void LinkDispatch( char **aResultMS, char **aResultES, char *aServer )
+
+void link_dispatch( char **aResultMS, char **aResultES, char *aServer )
 {
     debug( "%s", *aResultES );
     write( SerialConnection, *aResultES, ES_OUTPUT_SIZE );

@@ -3,10 +3,10 @@
 
 #include "Config.h"
 
-void DBInit( void );
-void DBClose( void );
+void db_init( void );
+void db_close( void );
 
-void DBWriteMS( MotionValues * );
-void DBWriteES( uint[] );
-void DBThreadsJoin( void );
+void db_write_MS( MotionValues * );
+void db_write_ES( uint[] );
+void db_threads_join( void );
 

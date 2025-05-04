@@ -7,6 +7,6 @@ void db_init( void );
 void db_close( void );
 
 void db_write_MS( MotionValues * );
-void db_write_ES( uint[] );
+void db_write_ES( char * );
 void db_threads_join( void );
 

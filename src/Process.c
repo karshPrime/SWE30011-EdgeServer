@@ -78,6 +78,6 @@ void process_ES( char *aData, char **aOutput )
     snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(_map_average_ECG( lSum )));
 
     debug( "%s", *aOutput );
-    db_write_ES( lValues );
+    db_write_ES( aData );
 }
 

@@ -23,49 +23,16 @@ int main( void )
 
     while ( TRUE )
     {
-        Property *lCurrentSelected = NULL;
-        char lSingleChar;
+        link_fetch( &MS->Data, &ES->Data );
 
-        link_fetch( &lSingleChar );
-        if ( '"' == lSingleChar )
-        {
-            link_fetch( &lSingleChar );
-
-            if ( 'M' == lSingleChar )
-            {
-                lCurrentSelected = MS;
-                lDataIndex = 0;
-            }
-            else if ( 'E' == lSingleChar && 0 != lDataIndex )
-            {
-                lCurrentSelected = ES;
-                lDataIndex = 0;
-            }
-            else
-            {
-                continue;
-            }
-
-            while ( lSingleChar != lCurrentSelected->BracketStart ) link_fetch( &lSingleChar );
-        }
-
-        if ( lCurrentSelected )
-        {
-            while ( lSingleChar != lCurrentSelected->BracketEnd )
-            {
-                link_fetch( &lSingleChar );
-                lCurrentSelected->Data[lDataIndex++] = lSingleChar;
-            }
-
-            lCurrentSelected->Data[lDataIndex-1] = '\0';
-            lCurrentSelected->Process( lCurrentSelected->Data, &lCurrentSelected->Output );
-        }
+        MS->Process( MS->Data, &MS->Output );
+        ES->Process( ES->Data, &ES->Output );
 
         if ( ES->Output && MS->Output )
         {
             db_threads_join();
             debug( "%s%s", ES->Output, MS->Output );
-            link_dispatch( &ES->Output, &MS->Output, server_output() );
+            link_dispatch( &MS->Output, &ES->Output, server_output() );
         }
     }
 

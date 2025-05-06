@@ -11,19 +11,18 @@
 
 #include "Process.h"
 #include "Database.h"
+#include "Server.h"
 #include "Debug.h"
-
-// temporary vars; would be replaced with webserver connecting module
-const int MotionSensitiveThreshold = 1000;
-const int TemperatureThreshhold = 10;
 
 //- Private Methods --------------------------------------------------------------------------------
 
-ColourRGB _map_average_ECG( uint aSum )
+ValuesECG _map_average_ECG( uint aSum )
 {
-    if ( aSum < (10 * ECG_RATE) ) return RED;
-    else if ( aSum < (1000 * ECG_RATE) ) return BLUE;
-    else return GREEN;
+    if ( aSum < ( server_ECG_disconnected() * ECG_RATE ) ) return DISCONNECTED;
+    else if ( aSum < (  server_ECG_range1() * ECG_RATE ) ) return RANGE1;
+    else if ( aSum < (  server_ECG_range2() * ECG_RATE ) ) return RANGE2;
+    else if ( aSum < (  server_ECG_range3() * ECG_RATE ) ) return RANGE3;
+    else return RANGE4;
 }
 
 
@@ -44,13 +43,13 @@ void process_MS( char *aData, char **aOutput )
 
     sprintf( *aOutput,
         "\"LLED\":%d,\"RLED\":%d,\"ULED\":%d,\"DLED\":%d,\"FLED\":%d,\"BLED\":%d,\"TLED\":%d}",
-        ( lValues.Accelerometer.X >  MotionSensitiveThreshold ),
-        ( lValues.Accelerometer.X < -MotionSensitiveThreshold ),
-        ( lValues.Accelerometer.Y >  MotionSensitiveThreshold ),
-        ( lValues.Accelerometer.Y < -MotionSensitiveThreshold ),
-        ( lValues.Accelerometer.Z >  MotionSensitiveThreshold ),
-        ( lValues.Accelerometer.Z < -MotionSensitiveThreshold ),
-        ( lValues.Temperature >= TemperatureThreshhold )
+        ( lValues.Accelerometer.X >  server_motion_sensitive() ),
+        ( lValues.Accelerometer.X < -server_motion_sensitive() ),
+        ( lValues.Accelerometer.Y >  server_motion_sensitive() ),
+        ( lValues.Accelerometer.Y < -server_motion_sensitive() ),
+        ( lValues.Accelerometer.Z >  server_motion_sensitive() ),
+        ( lValues.Accelerometer.Z < -server_motion_sensitive() ),
+        ( lValues.Temperature >= server_temperature() )
     );
 
     debug( "%s", *aOutput );

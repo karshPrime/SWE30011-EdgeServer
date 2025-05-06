@@ -30,7 +30,7 @@
 
 // Should stay same as the enum defined in IoT firmware
 typedef enum { STOP, START, UNCHANGED, BEEP, BEEP_FAST, BEEP_SLOW } AStatus;
-typedef enum { RED, BLUE, GREEN } ColourRGB;
+typedef enum { RANGE1, RANGE2, RANGE3, RANGE4, DISCONNECTED } ValuesECG;
 
 typedef enum { FALSE, TRUE } bool;
 typedef const char* str;

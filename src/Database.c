@@ -5,7 +5,12 @@
  */
 
 // #define NDEBUG
+#include "Config.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <mysql/mysql.h>
+#include <time.h>
 #include <pthread.h>
 #include "Database.h"
 #include "Debug.h"
@@ -15,6 +20,7 @@
 
 Thread ThreadMS;
 Thread ThreadES;
+static MYSQL *DBConnection = NULL;
 
 
 //- Private Methods --------------------------------------------------------------------------------
@@ -22,6 +28,26 @@ Thread ThreadES;
 void *_save_MS( void *aValues )
 {
     debug( "_save_MS called" );
+    MotionValues *lValues = ( MotionValues* )aValues;
+
+    char lQuery[512];
+    time_t lCurrentTime = time( NULL );
+    struct tm *lTMInfo = localtime( &lCurrentTime );
+    char lTimeString[32];
+    strftime( lTimeString, sizeof(lTimeString), "%Y-%m-%d %H:%M:%S", lTMInfo );
+
+    snprintf( lQuery, sizeof(lQuery),
+        "INSERT INTO SensorData (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
+        "GyroscopeX, GyroscopeY, GyroscopeZ, Temperature) "
+        "VALUES ('%s', %d, %d, %d, %d, %d, %d, %.2f)",
+        lTimeString,
+        lValues->Accelerometer.X, lValues->Accelerometer.Y, lValues->Accelerometer.Z,
+        lValues->Gyro.X, lValues->Gyro.Y, lValues->Gyro.Z,
+        lValues->Temperature
+    );
+
+    check ( !mysql_lQuery( DBConnection, lQuery ), "INSERT failed: %s\n", mysql_error(DBConnection) );
+
 
 error:
     return NULL;
@@ -41,20 +67,48 @@ error:
 
 void db_init( void )
 {
+    DBConnection = mysql_init( NULL );
+
+    check ( DBConnection != NULL,  "mysql_init() failed" );
+
+    check(
+        mysql_real_connect( DBConnection, DB_HOST, DB_USER, DB_PASS, DB_NAME, 0, NULL, 0 ) != NULL,
+        "mysql_real_connect() failed\nError: %s\n", mysql_error( DBConnection )
+    );
+
     db_threads_join();
+    return;
+
+error:
+    db_close();
 }
 
 
 void db_close( void )
 {
+    if ( DBConnection )
+    {
+        mysql_close( DBConnection );
+        DBConnection = NULL;
+    }
+
     db_threads_join();
+    return;
+
+error:
+    exit( EXIT_FAILURE );
 }
 
 
 void db_write_MS( MotionValues *aValues )
 {
-    ThreadMS.Status = pthread_create( &ThreadMS.Thread, NULL, saveMS, (void*)aValues );
+    check( DBConnection, "Database connection is not initialized.\n" );
+
+    ThreadMS.Status = pthread_create( &ThreadMS.Thread, NULL, _save_MS, (void*)aValues );
     check( ThreadMS.Status == FALSE, "Error creating MS thread\n");
+
+
+    return;
 
 error:
     // think of how to process data sequentially if thread fails
@@ -64,8 +118,13 @@ error:
 
 void db_write_ES( uint aValues[] )
 {
-    ThreadES.Status = pthread_create( &ThreadES.Thread, NULL, saveES, (void*)aValues );
+    check( DBConnection, "Database connection is not initialized.\n" );
+
+    ThreadES.Status = pthread_create( &ThreadES.Thread, NULL, _save_ES, (void*)aValues );
     check( ThreadES.Status == 0, "Error creating ES thread\n");
+
+
+    return;
 
 error:
     // think of how to process data sequentially if thread fails

@@ -19,6 +19,12 @@
 // System Defines
 #define ECG_RATE 256
 
+// Database Authenticaion
+#define DB_HOST "localhost"
+#define DB_USER "edge"
+#define DB_PASS ""
+#define DB_NAME "swe30011"
+
 
 //- Custom Datatypes -------------------------------------------------------------------------------
 

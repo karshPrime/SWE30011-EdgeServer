@@ -59,15 +59,18 @@ void process_MS( char *aData, char **aOutput )
 
 void process_ES( char *aData, char **aOutput )
 {
-    uint lValues[ECG_RATE];
-    uint lSum = 0;
 
     debug( "%s", aData );
+    // use the array when there's more need for the data but to just take the average
+    // uint lValues[ECG_RATE];
+    uint lSum = 0;
 
     for ( int i = 0; i < ECG_RATE; i++ )
     {
-        lValues[i] = atoi( aData );
-        lSum += lValues[i];
+        // lValues[i] = atoi( aData );
+        // lSum += lValues[i];
+
+        lSum += atoi( aData );
 
         while ( *aData != ',' && *aData != '\0' ) aData++;
 

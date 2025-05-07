@@ -4,7 +4,7 @@
  *
  */
 
-// #define NDEBUG
+#define NDEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,6 +45,7 @@ void _setup_serial( void )
     return;
 
 error:
+    log_error( "Critical Error. Terminating." );
     exit( EXIT_FAILURE );
 }
 
@@ -87,6 +88,7 @@ void link_init( Property **ES, Property **MS )
     return;
 
 error:
+    log_error( "Critical Error. Terminating." );
     link_terminate( *ES, *MS );
     exit( EXIT_FAILURE );
 }
@@ -114,6 +116,7 @@ void link_dispatch( char **aResultMS, char **aResultES, char *aServer )
     write( SerialConnection, *aResultMS, MS_OUTPUT_SIZE );
     aResultMS = NULL;
 }
+
 
 void link_fetch( char **aMS, char **aES )
 {
@@ -179,8 +182,7 @@ void link_fetch( char **aMS, char **aES )
                         lStartMS += 6; // skip "{\"MS\":"
                         char *lEndMS = lStartES - 1;
 
-                        while ( *lEndMS != '}' )
-                            lEndMS--; // go back to close MS object
+                        while ( *lEndMS != '}' ) lEndMS--; // go back to close MS object
 
                         size_t msLen = lEndMS - lStartMS + 1;
                         static char msBuf[1024];

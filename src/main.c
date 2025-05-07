@@ -12,7 +12,7 @@
 
 int main( void )
 {
-    debug( "Starting the system" );
+    log_info( "Starting the system" );
     Property *ES, *MS;
 
     link_init( &ES, &MS );
@@ -31,13 +31,12 @@ int main( void )
         if ( ES->Output && MS->Output )
         {
             db_threads_join();
-            debug( "%s%s", ES->Output, MS->Output );
             link_dispatch( &MS->Output, &ES->Output, server_output() );
         }
     }
 
 error:
-    debug( "Terminating the program" );
+    log_error( "Terminating the program" );
     db_close();
     link_terminate( ES, MS );
 

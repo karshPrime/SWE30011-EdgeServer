@@ -47,8 +47,10 @@ void *_save_MS( void *aValues )
 
     check ( !mysql_query( DBConnection, lQuery ), "INSERT failed: %s\n", mysql_error(DBConnection));
 
+    return NULL;
 
 error:
+    log_error( "Unable to save MS to the Database" );
     return NULL;
 }
 
@@ -57,7 +59,10 @@ void *_save_ES( void *aValues )
 {
     debug( "_save_ES called" );
 
+    return NULL;
+
 error:
+    log_error( "Unable to write MS to the Database" );
     return NULL;
 }
 
@@ -79,6 +84,7 @@ void db_init( void )
     return;
 
 error:
+    log_error( "Closing database connection" );
     db_close();
 }
 
@@ -92,10 +98,6 @@ void db_close( void )
     }
 
     db_threads_join();
-    return;
-
-error:
-    exit( EXIT_FAILURE );
 }
 
 
@@ -111,6 +113,7 @@ void db_write_MS( MotionValues *aValues )
 
 error:
     // think of how to process data sequentially if thread fails
+    log_error( "Unable to reserve thread to write MS to database" );
     return;
 }
 
@@ -127,6 +130,7 @@ void db_write_ES( char *aValues )
 
 error:
     // think of how to process data sequentially if thread fails
+    log_error( "Unable to reserve thread to write ES to database" );
     return;
 }
 

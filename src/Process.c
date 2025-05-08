@@ -30,25 +30,20 @@ ValuesECG _map_average_ECG( uint aSum )
 
 void process_MS( char *aData, char **aOutput )
 {
-    MotionValues lValues;
-
     debug( "%s", aData );
 
-    sscanf( aData,
-        " \"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%lf",
+    MotionValues lValues;
+    sscanf(aData,
+        "{\"AX\":%hd,\"AY\":%hd,\"AZ\":%hd,\"GX\":%hd,\"GY\":%hd,\"GZ\":%hd,\"Temp\":%hd}",
         &lValues.Accelerometer.X, &lValues.Accelerometer.Y, &lValues.Accelerometer.Z,
         &lValues.Gyro.X, &lValues.Gyro.Y, &lValues.Gyro.Z,
         &lValues.Temperature
     );
 
     sprintf( *aOutput,
-        "\"LLED\":%d,\"RLED\":%d,\"ULED\":%d,\"DLED\":%d,\"FLED\":%d,\"BLED\":%d,\"TLED\":%d}",
-        ( lValues.Accelerometer.X >  server_motion_sensitive() ),
-        ( lValues.Accelerometer.X < -server_motion_sensitive() ),
-        ( lValues.Accelerometer.Y >  server_motion_sensitive() ),
-        ( lValues.Accelerometer.Y < -server_motion_sensitive() ),
-        ( lValues.Accelerometer.Z >  server_motion_sensitive() ),
-        ( lValues.Accelerometer.Z < -server_motion_sensitive() ),
+        "\"LEDR\":%d,\"LEDL\":%d,\"LEDU\":%d,\"LEDD\":%d,\"LEDT\":%d,",
+        ( lValues.Accelerometer.Y < -1000 ), ( lValues.Accelerometer.Y >  1000 ),
+        ( lValues.Accelerometer.X >  1000 ), ( lValues.Accelerometer.X < -1000 ),
         ( lValues.Temperature >= server_temperature() )
     );
 

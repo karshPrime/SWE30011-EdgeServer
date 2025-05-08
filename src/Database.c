@@ -38,7 +38,7 @@ void *_save_MS( void *aValues )
     snprintf( lQuery, sizeof(lQuery),
         "INSERT INTO SensorData (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
         "GyroscopeX, GyroscopeY, GyroscopeZ, Temperature) "
-        "VALUES ('%s', %d, %d, %d, %d, %d, %d, %.2f)",
+        "VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)",
         lTimeString,
         lValues->Accelerometer.X, lValues->Accelerometer.Y, lValues->Accelerometer.Z,
         lValues->Gyro.X, lValues->Gyro.Y, lValues->Gyro.Z,

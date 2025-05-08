@@ -44,7 +44,7 @@ char *server_output( void )
 {
     sprintf( 
         OutputString,
-        "\"RGB\":{\"Red\":%d,\"Green\":%d,\"Blue\":%d},",
+        "\"RGB\":{\"Red\":%d,\"Green\":%d,\"Blue\":%d}}",
         Values.RGB.Red, Values.RGB.Green, Values.RGB.Blue
     );
 

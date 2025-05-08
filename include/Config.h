@@ -25,6 +25,8 @@
 #define DB_PASS ""
 #define DB_NAME "swe30011"
 
+#define CONFIG_FILE "/Users/zul/Projects/SWE30011/Assignment2/WebServer/config.bin"
+
 
 //- Custom Datatypes -------------------------------------------------------------------------------
 

@@ -16,13 +16,14 @@
 
 //- Private Methods --------------------------------------------------------------------------------
 
-ValuesECG _map_average_ECG( uint aSum )
+uint8_t *_map_average_ECG( uint aSum )
 {
-    if ( aSum < ( server_ECG_disconnected() * ECG_RATE ) ) return DISCONNECTED;
-    else if ( aSum < (  server_ECG_range1() * ECG_RATE ) ) return RANGE1;
-    else if ( aSum < (  server_ECG_range2() * ECG_RATE ) ) return RANGE2;
-    else if ( aSum < (  server_ECG_range3() * ECG_RATE ) ) return RANGE3;
-    else return RANGE4;
+    const int lSum = aSum % ECG_RATE;
+
+    if ( aSum < ( 100 * ECG_RATE ) ) return server_ECG_disconnected();
+    else if ( lSum % 2 == 0 ) return server_ECG_even();
+    else if ( lSum % 3 == 0 ) return server_ECG_three();
+    else return server_ECG_else();
 }
 
 
@@ -40,10 +41,14 @@ void process_MS( char *aData, char **aOutput )
         &lValues.Temperature
     );
 
+    const uint16_t lMotionSensitive = server_motion_sensitive();
+
     sprintf( *aOutput,
-        "\"LEDR\":%d,\"LEDL\":%d,\"LEDU\":%d,\"LEDD\":%d,\"LEDT\":%d,",
-        ( lValues.Accelerometer.Y < -1000 ), ( lValues.Accelerometer.Y >  1000 ),
-        ( lValues.Accelerometer.X >  1000 ), ( lValues.Accelerometer.X < -1000 ),
+        "\"LEDR\":%d,\"LEDL\":%d,\"LEDU\":%d,\"LEDD\":%d,\"BUZ\":%d}",
+        ( lValues.Accelerometer.Y < ( lMotionSensitive * -1 ) ),
+        ( lValues.Accelerometer.Y >  lMotionSensitive ),
+        ( lValues.Accelerometer.X >  lMotionSensitive ),
+        ( lValues.Accelerometer.X < ( lMotionSensitive * -1 )  ),
         ( lValues.Temperature >= server_temperature() )
     );
 
@@ -72,7 +77,9 @@ void process_ES( char *aData, char **aOutput )
         if ( *aData == ',' ) aData++;
     }
 
-    snprintf( *aOutput, 10, "{\"AHR\":%d,\n", (int)(_map_average_ECG( lSum )));
+    uint8_t *lColours = _map_average_ECG( lSum );
+    snprintf( *aOutput, 64, "{\"HRR\":%d,\"HRG\":%d,\"HRB\":%d,",
+        lColours[0], lColours[1], lColours[2] );
 
     debug( "%s", *aOutput );
     db_write_ES( aData );

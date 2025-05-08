@@ -9,6 +9,6 @@
 
 void link_init( Property **, Property ** );
 void link_terminate( Property *, Property * );
-void link_dispatch( char **, char **, char* );
+void link_dispatch( char **, char ** );
 void link_fetch( char **, char ** );
 

@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <stdint.h>
 #include <sys/types.h>
 
 //- System Configs ---------------------------------------------------------------------------------
@@ -14,7 +15,6 @@
 #define MS_OUTPUT_SIZE      128
 #define ES_INPUT_SIZE       16384
 #define ES_OUTPUT_SIZE      32
-#define SERVER_OUTPUT_SIZE  50
 
 // System Defines
 #define ECG_RATE 256
@@ -30,10 +30,8 @@
 
 // Should stay same as the enum defined in IoT firmware
 typedef enum { STOP, START, UNCHANGED, BEEP, BEEP_FAST, BEEP_SLOW } AStatus;
-typedef enum { RANGE1, RANGE2, RANGE3, RANGE4, DISCONNECTED } ValuesECG;
 
 typedef enum { FALSE, TRUE } bool;
-typedef const char* str;
 typedef unsigned int uint;
 
 typedef struct {
@@ -47,21 +45,6 @@ typedef struct {
 
     int16_t Temperature;
 } MotionValues;
-
-typedef struct {
-    struct {
-        uint  Red;
-        uint  Green;
-        uint  Blue;
-    } RGB;
-
-    // possible to expand
-} ServerValues;
-
-typedef struct {
-    str         Key;
-    AStatus     Status;
-} OutputMap;
 
 typedef struct {
     bool    Read;

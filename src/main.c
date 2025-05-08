@@ -24,6 +24,7 @@ int main( void )
     while ( TRUE )
     {
         link_fetch( &MS->Data, &ES->Data );
+        server_update();
 
         MS->Process( MS->Data, &MS->Output );
         ES->Process( ES->Data, &ES->Output );
@@ -31,7 +32,7 @@ int main( void )
         if ( ES->Output && MS->Output )
         {
             db_threads_join();
-            link_dispatch( &MS->Output, &ES->Output, server_output() );
+            link_dispatch( &MS->Output, &ES->Output );
         }
     }
 

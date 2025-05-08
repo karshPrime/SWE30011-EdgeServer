@@ -4,7 +4,7 @@
  *
  */
 
-// #define NDEBUG
+#define NDEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -103,18 +103,15 @@ void link_terminate( Property *ES, Property *MS )
 }
 
 
-void link_dispatch( char **aResultMS, char **aResultES, char *aServer )
+void link_dispatch( char **aResultMS, char **aResultES )
 {
-    debug( "%s%s%s", *aResultES, *aResultMS, aServer );
+    debug( "%s%s", *aResultES, *aResultMS );
 
-    write( SerialConnection, *aResultES, ES_OUTPUT_SIZE );
+    write( SerialConnection, *aResultES, strlen(*aResultES) );
     aResultES = NULL;
 
-    write( SerialConnection, *aResultMS, MS_OUTPUT_SIZE );
+    write( SerialConnection, *aResultMS, strlen(*aResultMS) );
     aResultMS = NULL;
-
-    write( SerialConnection, aServer, SERVER_OUTPUT_SIZE );
-    aResultES = NULL;
 }
 
 

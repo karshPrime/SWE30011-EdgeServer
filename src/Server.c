@@ -1,5 +1,5 @@
 
-#define NDEBUG
+// #define NDEBUG
 
 #include "Server.h"
 #include "Config.h"
@@ -7,48 +7,34 @@
 
 //- Global Vars ------------------------------------------------------------------------------------
 
-ServerValues Values;
-char OutputString[SERVER_OUTPUT_SIZE];
+uint8_t ECGRateEvenValue[]  = {0,255,0};     // default green
+uint8_t ECGRateThreeValue[] = {0,0,255};     // default blue
+uint8_t ECGRateElseValue[]  = {255,255,255}; // default white
 
-int MotionSensitiveThreshold      = 1000;
-int TemperatureThreshhold         = 10;
-int ECGRateDisconnectedThreshhold = 10;
-int ECGRateRange1Threshhold       = 1000;
-int ECGRateRange2Threshhold       = 1300;
-int ECGRateRange3Threshhold       = 1600;
+uint8_t ECGRateDisconnectedThreshhold[] = {255,0,0}; // default red
+uint16_t MotionSensitiveThreshold = 1000;
+uint16_t TemperatureThreshhold    = 10;
 
 
 //- Get Functions ----------------------------------------------------------------------------------
 
-int server_ECG_range1( void ) { return ECGRateRange1Threshhold; }
-int server_ECG_range2( void ) { return ECGRateRange2Threshhold; }
-int server_ECG_range3( void ) { return ECGRateRange3Threshhold; }
-int server_ECG_disconnected( void ) { return ECGRateDisconnectedThreshhold; }
+uint8_t *server_ECG_even( void ) { return ECGRateEvenValue; }
+uint8_t *server_ECG_three( void ) { return ECGRateThreeValue; }
+uint8_t *server_ECG_else( void ) { return ECGRateElseValue; }
+uint8_t *server_ECG_disconnected( void ) { return ECGRateDisconnectedThreshhold; }
 
-int server_temperature( void ) { return TemperatureThreshhold; }
-int server_motion_sensitive( void ) { return MotionSensitiveThreshold; }
+uint16_t server_temperature( void ) { return TemperatureThreshhold; }
+uint16_t server_motion_sensitive( void ) { return MotionSensitiveThreshold; }
 
 
 //- Public Methods ---------------------------------------------------------------------------------
 
-void server_init( void )
-{
-    // Initial Values
-    Values.RGB.Red   = 0;
-    Values.RGB.Green = 0;
-    Values.RGB.Blue  = 0;
-}
+void server_init( void ) {}
 
 
-char *server_output( void )
+void server_update( void )
 {
-    sprintf( 
-        OutputString,
-        "\"RGB\":{\"Red\":%d,\"Green\":%d,\"Blue\":%d}}",
-        Values.RGB.Red, Values.RGB.Green, Values.RGB.Blue
     );
 
-    debug( "%s", OutputString );
-    return OutputString;
 }
 

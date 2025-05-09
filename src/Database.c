@@ -36,7 +36,7 @@ void *_save_MS( void *aValues )
     strftime( lTimeString, sizeof(lTimeString), "%Y-%m-%d %H:%M:%S", lTMInfo );
 
     snprintf( lQuery, sizeof(lQuery),
-        "INSERT INTO `Motion-Sensor` (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
+        "INSERT INTO RecordMotion (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
         "GyroscopeX, GyroscopeY, GyroscopeZ, Temperature) "
         "VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)",
         lTimeString,
@@ -71,7 +71,7 @@ void *_save_ES( void *aValues )
     mysql_real_escape_string( DBConnection, lEscapedValues, lValues, strlen(lValues) );
 
     snprintf( lQuery, sizeof(lQuery),
-        "INSERT INTO `ECG-Sensor` (time, Values) " "VALUES ('%s', '%s')",
+        "INSERT INTO RecordECG (time, Values) " "VALUES ('%s', '%s')",
         lTimeString, lEscapedValues
     );
 

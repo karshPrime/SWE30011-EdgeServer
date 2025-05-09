@@ -4,7 +4,7 @@
  *
  */
 
-#define NDEBUG
+// #define NDEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -71,7 +71,7 @@ void *_save_ES( void *aValues )
     mysql_real_escape_string( DBConnection, lEscapedValues, lValues, strlen(lValues) );
 
     snprintf( lQuery, sizeof(lQuery),
-        "INSERT INTO RecordECG (time, Values) " "VALUES ('%s', '%s')",
+        "INSERT INTO RecordECG (time, Readings) " "VALUES ('%s', '%s')",
         lTimeString, lEscapedValues
     );
 
@@ -80,7 +80,7 @@ void *_save_ES( void *aValues )
     return NULL;
 
 error:
-    log_error( "Unable to write MS to the Database" );
+    log_error( "Unable to write ES to the Database" );
     return NULL;
 }
 
@@ -126,7 +126,6 @@ void db_write_MS( MotionValues *aValues )
     ThreadMS.Status = pthread_create( &ThreadMS.Thread, NULL, _save_MS, (void*)aValues );
     check( ThreadMS.Status == FALSE, "Error creating MS thread\n");
 
-
     return;
 
 error:
@@ -141,7 +140,6 @@ void db_write_ES( char *aValues )
 
     ThreadES.Status = pthread_create( &ThreadES.Thread, NULL, _save_ES, (void*)aValues );
     check( ThreadES.Status == 0, "Error creating ES thread\n");
-
 
     return;
 

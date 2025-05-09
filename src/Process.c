@@ -59,8 +59,9 @@ void process_MS( char *aData, char **aOutput )
 
 void process_ES( char *aData, char **aOutput )
 {
-
     debug( "%s", aData );
+    db_write_ES( aData );
+
     // use the array when there's more need for the data but to just take the average
     // uint lValues[ECG_RATE];
     uint lSum = 0;
@@ -82,6 +83,5 @@ void process_ES( char *aData, char **aOutput )
         lColours[0], lColours[1], lColours[2] );
 
     debug( "%s", *aOutput );
-    db_write_ES( aData );
 }
 

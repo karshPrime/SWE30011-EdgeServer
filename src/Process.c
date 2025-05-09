@@ -43,6 +43,8 @@ void process_MS( char *aData, char **aOutput )
 
     const uint16_t lMotionSensitive = server_motion_sensitive();
 
+    lValues.Temperature /= ( lValues.Temperature < 0 ) ? -237 : 237;
+
     sprintf( *aOutput,
         "\"LEDR\":%d,\"LEDL\":%d,\"LEDU\":%d,\"LEDD\":%d,\"BUZ\":%d}",
         ( lValues.Accelerometer.Y < ( lMotionSensitive * -1 ) ),

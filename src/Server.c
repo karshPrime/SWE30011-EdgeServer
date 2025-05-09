@@ -51,7 +51,7 @@ void server_update( void )
     TemperatureThreshhold    = buffer[14] | ( buffer[15] << 8 );
 
     debug(
-        "ECG-Even:%d,%d,%d\tECG-Three:%d,%d,%d\tECG-Else:%d,%d,%d\tDisconnect:%d,Temp:%d",
+        "ECG-Even:%d,%d,%d\tECG-Three:%d,%d,%d\tECG-Else:%d,%d,%d\tDisconnect:%d\tTemp:%d",
         ECGRateEvenValue[0], ECGRateEvenValue[1], ECGRateEvenValue[2],
         ECGRateThreeValue[0], ECGRateThreeValue[1], ECGRateThreeValue[2],
         ECGRateElseValue[0], ECGRateElseValue[1], ECGRateElseValue[2],

@@ -27,7 +27,7 @@ static MYSQL *DBConnection = NULL;
 void *_save_MS( void *aValues )
 {
     debug( "_save_MS called" );
-    MotionValues *lValues = ( MotionValues* )aValues;
+    const MotionValues *lValues = ( MotionValues* )aValues;
 
     char lQuery[512];
     time_t lCurrentTime = time( NULL );
@@ -36,7 +36,7 @@ void *_save_MS( void *aValues )
     strftime( lTimeString, sizeof(lTimeString), "%Y-%m-%d %H:%M:%S", lTMInfo );
 
     snprintf( lQuery, sizeof(lQuery),
-        "INSERT INTO SensorData (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
+        "INSERT INTO `Motion-Sensor` (time, AcceleratorX, AcceleratorY, AcceleratorZ, "
         "GyroscopeX, GyroscopeY, GyroscopeZ, Temperature) "
         "VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)",
         lTimeString,
@@ -45,7 +45,7 @@ void *_save_MS( void *aValues )
         lValues->Temperature
     );
 
-    check ( !mysql_query( DBConnection, lQuery ), "INSERT failed: %s\n", mysql_error(DBConnection));
+    check ( !mysql_query( DBConnection, lQuery ), "INSERT failed: %s", mysql_error( DBConnection ));
 
     return NULL;
 
@@ -58,6 +58,24 @@ error:
 void *_save_ES( void *aValues )
 {
     debug( "_save_ES called" );
+    const char *lValues = ( char* )aValues;
+
+    char lQuery[2048];
+    time_t lCurrentTime = time( NULL );
+    struct tm *lTMInfo = localtime( &lCurrentTime );
+    char lTimeString[32];
+    strftime( lTimeString, sizeof(lTimeString), "%Y-%m-%d %H:%M:%S", lTMInfo );
+
+    // Escape the JSON string to safely include it in SQL
+    char lEscapedValues[2048];
+    mysql_real_escape_string( DBConnection, lEscapedValues, lValues, strlen(lValues) );
+
+    snprintf( lQuery, sizeof(lQuery),
+        "INSERT INTO `ECG-Sensor` (time, Values) " "VALUES ('%s', '%s')",
+        lTimeString, lEscapedValues
+    );
+
+    check ( !mysql_query( DBConnection, lQuery ), "INSERT failed: %s", mysql_error( DBConnection ));
 
     return NULL;
 
@@ -103,7 +121,7 @@ void db_close( void )
 
 void db_write_MS( MotionValues *aValues )
 {
-    check( DBConnection, "Database connection is not initialized.\n" );
+    check( DBConnection, "Database connection is not initialised." );
 
     ThreadMS.Status = pthread_create( &ThreadMS.Thread, NULL, _save_MS, (void*)aValues );
     check( ThreadMS.Status == FALSE, "Error creating MS thread\n");
@@ -112,7 +130,6 @@ void db_write_MS( MotionValues *aValues )
     return;
 
 error:
-    // think of how to process data sequentially if thread fails
     log_error( "Unable to reserve thread to write MS to database" );
     return;
 }
@@ -120,7 +137,7 @@ error:
 
 void db_write_ES( char *aValues )
 {
-    check( DBConnection, "Database connection is not initialized.\n" );
+    check( DBConnection, "Database connection is not initialised." );
 
     ThreadES.Status = pthread_create( &ThreadES.Thread, NULL, _save_ES, (void*)aValues );
     check( ThreadES.Status == 0, "Error creating ES thread\n");
@@ -129,7 +146,6 @@ void db_write_ES( char *aValues )
     return;
 
 error:
-    // think of how to process data sequentially if thread fails
     log_error( "Unable to reserve thread to write ES to database" );
     return;
 }
